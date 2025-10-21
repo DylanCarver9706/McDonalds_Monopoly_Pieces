@@ -6,6 +6,7 @@ import { CssBaseline } from "@mui/material";
 import PostHogProvider from "@/components/PostHogProvider";
 import Navbar from "@/components/Navbar";
 import ThemeRegistry from "@/components/ThemeRegistry";
+import { UserSetupProvider } from "@/components/UserSetupProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,8 +30,10 @@ export default function RootLayout({
           <ThemeRegistry>
             <CssBaseline />
             <PostHogProvider>
-              <Navbar />
-              <main className="min-h-screen">{children}</main>
+              <UserSetupProvider>
+                <Navbar />
+                <main className="min-h-screen">{children}</main>
+              </UserSetupProvider>
             </PostHogProvider>
           </ThemeRegistry>
         </body>

@@ -10,46 +10,48 @@ import {
   Stack,
 } from "@mui/material";
 import {
-  Calculate as CalculateIcon,
-  TrendingUp as TrendingUpIcon,
-  Speed as SpeedIcon,
-  Psychology as PsychologyIcon,
+  Search as SearchIcon,
+  Chat as ChatIcon,
+  Share as ShareIcon,
   CheckCircle as CheckCircleIcon,
   ArrowForward as ArrowForwardIcon,
+  Security as SecurityIcon,
+  Speed as SpeedIcon,
 } from "@mui/icons-material";
 import { SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
-import SnowballCarouselAnimation from "@/components/SnowballCarouselAnimation";
 
 export default function HomePage() {
   const benefits = [
     {
-      icon: <TrendingUpIcon sx={{ fontSize: 40, color: "#2563eb" }} />,
-      title: "Build Momentum",
+      icon: <SearchIcon sx={{ fontSize: 40, color: "#2563eb" }} />,
+      title: "Find Missing Pieces",
       description:
-        "Start with your smallest debt and gain confidence as you see progress.",
+        "Search for the specific Monopoly pieces you need to complete your sets and win prizes.",
     },
     {
-      icon: <SpeedIcon sx={{ fontSize: 40, color: "#2563eb" }} />,
-      title: "Pay Off Faster",
+      icon: <ChatIcon sx={{ fontSize: 40, color: "#2563eb" }} />,
+      title: "Connect & Negotiate",
       description:
-        "Focus your extra payments on one debt at a time for maximum impact.",
+        "Chat directly with other players to negotiate trades, splits, or sales of your pieces.",
     },
     {
-      icon: <PsychologyIcon sx={{ fontSize: 40, color: "#2563eb" }} />,
-      title: "Stay Motivated",
+      icon: <ShareIcon sx={{ fontSize: 40, color: "#2563eb" }} />,
+      title: "Share the Prize",
       description:
-        "See your debt-free date and track your journey to financial freedom.",
+        "Work together to complete sets and split prizes fairly with your trading partners.",
     },
   ];
 
   const features = [
-    "Easy debt entry",
-    "Visual progress tracking",
-    "Payment schedule generation",
-    "Debt-free date calculator",
+    "Search by piece name or number",
+    "Real-time chat messaging",
+    "Secure piece verification",
+    "Prize value calculator",
     "Mobile-friendly interface",
-    "Secure and private",
+    "Safe trading guidelines",
+    "Piece rarity indicators",
+    "Trading history tracking",
   ];
 
   return (
@@ -74,15 +76,15 @@ export default function HomePage() {
                 gutterBottom
                 sx={{ fontWeight: "bold" }}
               >
-                Dave Ramsey Snowball Calculator
+                McDonald's Monopoly Piece Trader
               </Typography>
               <Typography
                 variant="h5"
                 gutterBottom
                 sx={{ mb: 3, opacity: 0.9 }}
               >
-                Use the Dave Ramsey Snowball Method to eliminate your debt and
-                achieve financial freedom.
+                Connect with other players to trade, sell, or split McDonald's
+                Monopoly pieces and win prizes together.
               </Typography>
               <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
                 <SignInButton mode="modal">
@@ -99,7 +101,7 @@ export default function HomePage() {
                       py: 1.5,
                     }}
                   >
-                    Start Your Debt-Free Journey
+                    Start Trading Pieces
                   </Button>
                 </SignInButton>
                 <Button
@@ -118,21 +120,9 @@ export default function HomePage() {
                     py: 1.5,
                   }}
                 >
-                  Learn How It Works
+                  How Trading Works
                 </Button>
               </Stack>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: 400,
-                }}
-              >
-                <SnowballCarouselAnimation />
-              </Box>
             </Grid>
           </Grid>
         </Container>
@@ -148,14 +138,15 @@ export default function HomePage() {
             gutterBottom
             sx={{ color: "#1e293b" }}
           >
-            Why the Snowball Method Works
+            Why Trade Monopoly Pieces?
           </Typography>
           <Typography
             variant="h6"
             textAlign="center"
             sx={{ mb: 6, color: "#64748b" }}
           >
-            The psychology behind Dave Ramsey's proven debt payoff strategy
+            Complete your sets faster by connecting with other players and
+            working together
           </Typography>
 
           <Grid container spacing={4}>
@@ -207,11 +198,11 @@ export default function HomePage() {
             gutterBottom
             sx={{ color: "white" }}
           >
-            Ready to Start Your Debt-Free Journey?
+            Ready to Find Your Missing Pieces?
           </Typography>
           <Typography variant="h6" sx={{ mb: 4, opacity: 0.9, color: "white" }}>
-            Join thousands of people who have used this method to get out of
-            debt faster.
+            Join thousands of players who have completed their sets and won
+            prizes through trading.
           </Typography>
           <SignInButton mode="modal">
             <Button
@@ -228,9 +219,95 @@ export default function HomePage() {
                 },
               }}
             >
-              Get Started Now
+              Start Trading Now
             </Button>
           </SignInButton>
+        </Container>
+      </Box>
+
+      {/* Game Info Section */}
+      <Box sx={{ backgroundColor: "#ffffff", py: 8 }}>
+        <Container maxWidth="lg">
+          <Box sx={{ textAlign: "center", mb: 6 }}>
+            <Typography
+              variant="h3"
+              component="h2"
+              gutterBottom
+              sx={{ color: "#1e293b" }}
+            >
+              About McDonald's Monopoly
+            </Typography>
+            <Typography variant="h6" sx={{ mb: 4, color: "#64748b" }}>
+              Everything you need to know about the game and trading safely
+            </Typography>
+          </Box>
+
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={6}>
+              <Card sx={{ p: 3, height: "100%" }}>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{
+                    color: "#1e293b",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
+                  <SecurityIcon sx={{ color: "#2563eb" }} />
+                  Safe Trading Guidelines
+                </Typography>
+                <Typography sx={{ color: "#64748b", mb: 2 }}>
+                  • Always verify pieces before trading
+                </Typography>
+                <Typography sx={{ color: "#64748b", mb: 2 }}>
+                  • Use our secure chat system for negotiations
+                </Typography>
+                <Typography sx={{ color: "#64748b", mb: 2 }}>
+                  • Never share personal information
+                </Typography>
+                <Typography sx={{ color: "#64748b", mb: 2 }}>
+                  • Report suspicious activity immediately
+                </Typography>
+                <Typography sx={{ color: "#64748b" }}>
+                  • Meet in public places for physical trades
+                </Typography>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Card sx={{ p: 3, height: "100%" }}>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{
+                    color: "#1e293b",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
+                  <SpeedIcon sx={{ color: "#2563eb" }} />
+                  Game Rules & Tips
+                </Typography>
+                <Typography sx={{ color: "#64748b", mb: 2 }}>
+                  • Game runs for limited time each year
+                </Typography>
+                <Typography sx={{ color: "#64748b", mb: 2 }}>
+                  • Some pieces are extremely rare
+                </Typography>
+                <Typography sx={{ color: "#64748b", mb: 2 }}>
+                  • Complete sets to win prizes
+                </Typography>
+                <Typography sx={{ color: "#64748b", mb: 2 }}>
+                  • Check official McDonald's terms
+                </Typography>
+                <Typography sx={{ color: "#64748b" }}>
+                  • Keep your pieces safe and dry
+                </Typography>
+              </Card>
+            </Grid>
+          </Grid>
         </Container>
       </Box>
 
@@ -244,11 +321,11 @@ export default function HomePage() {
               gutterBottom
               sx={{ color: "#1e293b" }}
             >
-              Everything You Need to Succeed
+              Everything You Need to Trade Successfully
             </Typography>
             <Typography variant="h6" sx={{ mb: 4, color: "#64748b" }}>
-              Our comprehensive calculator provides all the tools you need to
-              create and stick to your debt payoff plan.
+              Our platform provides all the tools you need to find pieces,
+              connect with traders, and complete your Monopoly sets.
             </Typography>
           </Box>
 
@@ -278,11 +355,11 @@ export default function HomePage() {
       >
         <Container maxWidth="md" sx={{ textAlign: "center" }}>
           <Typography variant="h4" component="h2" gutterBottom>
-            Don't Wait to Start
+            Don't Miss Out on Prizes
           </Typography>
           <Typography variant="h6" sx={{ mb: 4, opacity: 0.9 }}>
-            Every day you wait is another day in debt. Start your journey to
-            financial freedom today.
+            The McDonald's Monopoly game has limited time. Start trading pieces
+            today to complete your sets and win prizes.
           </Typography>
           <SignInButton mode="modal">
             <Button
@@ -299,7 +376,7 @@ export default function HomePage() {
                 },
               }}
             >
-              Start Now - It's Free
+              Start Trading - It's Free
             </Button>
           </SignInButton>
         </Container>

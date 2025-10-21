@@ -114,10 +114,10 @@ export default function HowItWorksPage() {
                 color="text.secondary"
                 sx={{ mb: 4, maxWidth: 520, mx: "auto", textAlign: "center" }}
               >
-                The Snowball Method is a debt payoff strategy popularized
-                by Dave Ramsey where you pay off your debts in order of smallest
-                to largest debt balance, instead of interest rate. As each debt
-                is paid off, you roll the payment amount into the next debt.
+                The Snowball Method is a debt payoff strategy popularized by
+                Dave Ramsey where you pay off your debts in order of smallest to
+                largest debt balance, instead of interest rate. As each debt is
+                paid off, you roll the payment amount into the next debt.
               </Typography>
 
               <Box sx={{ mt: 4, textAlign: "center" }}>
