@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       created_at: newMessage.created_at,
       sender: {
         id: newMessage.sender_id,
-        username: newMessage.users.username,
+        username: newMessage.users?.[0]?.username as string,
       },
     };
 
