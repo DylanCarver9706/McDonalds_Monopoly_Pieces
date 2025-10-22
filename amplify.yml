@@ -7,7 +7,7 @@ frontend:
     build:
       commands:
         # Write private env vars (used server-side only)
-        - env | grep -e CLERK_SECRET_KEY -e STRIPE_SECRET_KEY >> .env.production
+        - env | grep -e CLERK_SECRET_KEY -e SUPABASE_SERVICE_ROLE_KEY >> .env.production
 
         # Write public env vars (safe for client)
         - env | grep -e NEXT_PUBLIC_ >> .env.production
