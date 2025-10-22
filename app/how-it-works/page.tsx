@@ -32,44 +32,54 @@ import { SignInButton } from "@clerk/nextjs";
 export default function HowItWorksPage() {
   const steps = [
     {
-      label: "List All Your Debts",
+      label: "Add Your Pieces",
       description:
-        "Start by listing all your debts from smallest to largest balance, regardless of interest rate.",
+        "Start by adding all the Monopoly pieces you have to your collection. Include the year, piece name, and where you acquired it.",
       number: 1,
     },
     {
-      label: "Pay Minimums on All Debts",
+      label: "Search for Missing Pieces",
       description:
-        "Continue making minimum payments on all your debts to avoid late fees and penalties.",
+        "Browse through property sets to find the pieces you need to complete your collections. Each piece shows who has it available.",
       number: 2,
     },
     {
-      label: "Attack the Smallest Debt",
+      label: "Connect with Other Players",
       description:
-        "Put every extra dollar toward your smallest debt until it's completely paid off.",
+        "Click on any piece to see all players who have it, then start a chat to negotiate trades, splits, or sales.",
       number: 3,
     },
     {
-      label: "Roll Over Payments",
+      label: "Complete Your Collections",
       description:
-        "Once a debt is paid off, take that payment amount and add it to the next smallest debt.",
+        "Trade pieces with other players to complete your property sets and win prizes together!",
       number: 4,
     },
   ];
 
   const benefits = [
-    "Builds momentum and motivation",
-    "Provides quick wins to stay encouraged",
-    "Simplifies your debt payoff strategy",
-    "More money back in your pocket each month",
-    "Helps you stay focused on one goal at a time",
+    "Find missing pieces quickly and easily",
+    "Connect with players who have what you need",
+    "Secure trading with verified users",
+    "Real-time chat for instant negotiations",
+    "Complete collections and win prizes together",
   ];
 
-  const example = [
-    { debt: "Credit Card A", balance: 500, payment: 50 },
-    { debt: "Personal Loan", balance: 2000, payment: 100 },
-    { debt: "Car Loan", balance: 15000, payment: 300 },
-    { debt: "Student Loan", balance: 25000, payment: 200 },
+  const tradingExamples = [
+    { piece: "Boardwalk", section: "Dark Blue", rarity: "Rare", players: 12 },
+    { piece: "Park Place", section: "Dark Blue", rarity: "Rare", players: 8 },
+    {
+      piece: "Marvin Gardens",
+      section: "Yellow",
+      rarity: "Common",
+      players: 45,
+    },
+    {
+      piece: "Ventnor Avenue",
+      section: "Yellow",
+      rarity: "Common",
+      players: 38,
+    },
   ];
 
   return (
@@ -91,10 +101,11 @@ export default function HowItWorksPage() {
             gutterBottom
             sx={{ fontWeight: "bold" }}
           >
-            How the Snowball Method Works
+            How Monopoly McTrade Works
           </Typography>
           <Typography variant="h5" textAlign="center" sx={{ opacity: 0.9 }}>
-            The psychology behind Dave Ramsey's proven debt payoff strategy
+            Connect with other players to trade McDonald's Monopoly pieces and
+            complete your collections
           </Typography>
         </Container>
       </Box>
@@ -114,10 +125,10 @@ export default function HowItWorksPage() {
                 color="text.secondary"
                 sx={{ mb: 4, maxWidth: 520, mx: "auto", textAlign: "center" }}
               >
-                The Snowball Method is a debt payoff strategy popularized by
-                Dave Ramsey where you pay off your debts in order of smallest to
-                largest debt balance, instead of interest rate. As each debt is
-                paid off, you roll the payment amount into the next debt.
+                Monopoly McTrade is the ultimate platform for McDonald's
+                Monopoly piece trading. Connect with other players, find missing
+                pieces, and complete your property sets to win amazing prizes
+                together!
               </Typography>
 
               <Box sx={{ mt: 4, textAlign: "center" }}>
@@ -128,7 +139,7 @@ export default function HowItWorksPage() {
                     endIcon={<ArrowForwardIcon />}
                     sx={{ mr: 2 }}
                   >
-                    Try the Calculator
+                    Start Trading Pieces
                   </Button>
                 </SignInButton>
               </Box>
@@ -140,7 +151,7 @@ export default function HowItWorksPage() {
                 gutterBottom
                 sx={{ textAlign: { xs: "center", md: "left" } }}
               >
-                Why This Method Works:
+                Why Monopoly McTrade Works:
               </Typography>
               <List
                 sx={{ px: 0, m: 0, maxWidth: 520, mx: { xs: "auto", md: 0 } }}
@@ -175,14 +186,14 @@ export default function HowItWorksPage() {
             gutterBottom
             sx={{ color: "white" }}
           >
-            The 4-Step Process
+            The 4-Step Trading Process
           </Typography>
           <Typography
             variant="h6"
             textAlign="center"
             sx={{ mb: 6, color: "rgba(255,255,255,0.85)" }}
           >
-            Follow these steps to implement the snowball method
+            Follow these steps to start trading Monopoly pieces
           </Typography>
 
           <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -235,7 +246,6 @@ export default function HowItWorksPage() {
         </Container>
       </Box>
 
-      {/* Traditional vs Snowball Comparison */}
       <Box sx={{ backgroundColor: "#f8fafc", py: 8 }}>
         <Container maxWidth="lg">
           <Typography
@@ -244,7 +254,7 @@ export default function HowItWorksPage() {
             textAlign="center"
             gutterBottom
           >
-            Traditional Debt Payoff vs Snowball Method
+            Trading vs Going Solo
           </Typography>
           <Typography
             variant="h6"
@@ -252,69 +262,42 @@ export default function HowItWorksPage() {
             color="text.secondary"
             sx={{ mb: 6 }}
           >
-            See how your focus changes your momentum and your payoff timeline
+            See how trading with other players helps you complete collections
+            faster
           </Typography>
 
           <Grid container spacing={4}>
             <Grid item xs={12} md={6}>
               <Card sx={{ p: 3, height: "100%" }}>
                 <Typography variant="h5" gutterBottom>
-                  Traditional: Smallest Debt Balance First
+                  Going Solo: Collecting Alone
                 </Typography>
                 <Typography color="text.secondary" sx={{ mb: 5 }}>
-                  Focus extra payments on the largest interest rate first.
+                  Try to collect all pieces yourself without trading with other
+                  players.
                 </Typography>
                 <Typography variant="h6" mb={2} gutterBottom>
-                  $500/ month extra payment
+                  Limited to your own purchases
                 </Typography>
                 <TableContainer component={Paper} sx={{ mb: 2 }}>
-                  <Table size="small" aria-label="traditional order">
+                  <Table size="small" aria-label="solo collecting">
                     <TableHead>
                       <TableRow>
-                        <TableCell>Order</TableCell>
-                        <TableCell align="left">Debt</TableCell>
-                        <TableCell align="right">Balance</TableCell>
-                        <TableCell align="right">Rate %</TableCell>
-                        <TableCell align="right">Min. Payment</TableCell>
+                        <TableCell>Property</TableCell>
+                        <TableCell align="left">Section</TableCell>
+                        <TableCell align="right">Rarity</TableCell>
+                        <TableCell align="right">Players</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {/* Sorted by balance (smallest first) */}
-                      <TableRow>
-                        <TableCell>1</TableCell>
-                        <TableCell>Credit Card</TableCell>
-                        <TableCell align="right">$20,000</TableCell>
-                        <TableCell align="right">26%</TableCell>
-                        <TableCell align="right">$250</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>2</TableCell>
-                        <TableCell>Store Card</TableCell>
-                        <TableCell align="right">$1,200</TableCell>
-                        <TableCell align="right">15%</TableCell>
-                        <TableCell align="right">$45</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>3</TableCell>
-                        <TableCell>Personal Loan</TableCell>
-                        <TableCell align="right">$10,000</TableCell>
-                        <TableCell align="right">8%</TableCell>
-                        <TableCell align="right">$500</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>4</TableCell>
-                        <TableCell>Car Loan</TableCell>
-                        <TableCell align="right">$30,000</TableCell>
-                        <TableCell align="right">6%</TableCell>
-                        <TableCell align="right">$650</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>5</TableCell>
-                        <TableCell>Medical Bill</TableCell>
-                        <TableCell align="right">$3,500</TableCell>
-                        <TableCell align="right">0%</TableCell>
-                        <TableCell align="right">$150</TableCell>
-                      </TableRow>
+                      {tradingExamples.map((example, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{example.piece}</TableCell>
+                          <TableCell align="left">{example.section}</TableCell>
+                          <TableCell align="right">{example.rarity}</TableCell>
+                          <TableCell align="right">Just You</TableCell>
+                        </TableRow>
+                      ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -324,63 +307,34 @@ export default function HowItWorksPage() {
             <Grid item xs={12} md={6}>
               <Card sx={{ p: 3, height: "100%" }}>
                 <Typography variant="h5" gutterBottom color="primary">
-                  Snowball: Smallest Minimum Payment First
+                  Monopoly McTrade: Connect & Trade
                 </Typography>
                 <Typography color="text.secondary" sx={{ mb: 2 }}>
-                  Focus extra payments on the smallest balance first, then roll
-                  that minimum payment amount forward.
+                  Find other players who have the pieces you need and trade for
+                  the pieces they want. Everyone wins!
                 </Typography>
                 <Typography variant="h6" mb={2} gutterBottom>
-                  $500/ month extra payment + Freed min. payments
+                  Access to all players' collections
                 </Typography>
                 <TableContainer component={Paper} sx={{ mb: 2 }}>
-                  <Table size="small" aria-label="snowball order">
+                  <Table size="small" aria-label="trading network">
                     <TableHead>
                       <TableRow>
-                        <TableCell>Order</TableCell>
-                        <TableCell align="left">Debt</TableCell>
-                        <TableCell align="right">Balance</TableCell>
-                        <TableCell align="right">Rate %</TableCell>
-                        <TableCell align="right">Min. Payment</TableCell>
+                        <TableCell>Property</TableCell>
+                        <TableCell align="left">Section</TableCell>
+                        <TableCell align="right">Rarity</TableCell>
+                        <TableCell align="right">Players</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {/* Sorted by min payment (smallest first) */}
-                      <TableRow>
-                        <TableCell>1</TableCell>
-                        <TableCell>Store Card</TableCell>
-                        <TableCell align="right">$1,200</TableCell>
-                        <TableCell align="right">15%</TableCell>
-                        <TableCell align="right">$45</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>2</TableCell>
-                        <TableCell>Medical Bill</TableCell>
-                        <TableCell align="right">$3,500</TableCell>
-                        <TableCell align="right">0%</TableCell>
-                        <TableCell align="right">$150</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>3</TableCell>
-                        <TableCell>Credit Card</TableCell>
-                        <TableCell align="right">$20,000</TableCell>
-                        <TableCell align="right">26%</TableCell>
-                        <TableCell align="right">$250</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>4</TableCell>
-                        <TableCell>Personal Loan</TableCell>
-                        <TableCell align="right">$10,000</TableCell>
-                        <TableCell align="right">8%</TableCell>
-                        <TableCell align="right">$500</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>5</TableCell>
-                        <TableCell>Car Loan</TableCell>
-                        <TableCell align="right">$30,000</TableCell>
-                        <TableCell align="right">6%</TableCell>
-                        <TableCell align="right">$650</TableCell>
-                      </TableRow>
+                      {tradingExamples.map((example, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{example.piece}</TableCell>
+                          <TableCell align="left">{example.section}</TableCell>
+                          <TableCell align="right">{example.rarity}</TableCell>
+                          <TableCell align="right">{example.players}</TableCell>
+                        </TableRow>
+                      ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -401,11 +355,11 @@ export default function HowItWorksPage() {
       >
         <Container maxWidth="md" sx={{ textAlign: "center" }}>
           <Typography variant="h4" component="h2" gutterBottom>
-            Ready to Start Your Snowball?
+            Ready to Start Trading?
           </Typography>
           <Typography variant="h6" sx={{ mb: 4, opacity: 0.9 }}>
-            Our calculator will help you create a personalized debt payoff plan
-            using the snowball method.
+            Join Monopoly McTrade and connect with other players to complete
+            your McDonald's Monopoly collections and win amazing prizes!
           </Typography>
           <SignInButton mode="modal">
             <Button
@@ -422,7 +376,7 @@ export default function HowItWorksPage() {
                 },
               }}
             >
-              Start Your Debt-Free Journey
+              Start Trading Pieces
             </Button>
           </SignInButton>
         </Container>

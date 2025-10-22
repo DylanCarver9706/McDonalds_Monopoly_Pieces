@@ -11,11 +11,11 @@ import { UserSetupProvider } from "@/components/UserSetupProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Snowball Calculator - Dave Ramsey Debt Payoff Tool",
+  title: "Monopoly McTrade - McDonald's Monopoly Piece Finder",
   description:
-    "Calculate your debt payoff strategy using the Dave Ramsey snowball method. Get out of debt faster with our easy-to-use calculator.",
+    "Trade McDonald's Monopoly pieces with other players. Find the best deals and win prizes together.",
   keywords:
-    "debt payoff, snowball method, Dave Ramsey, debt calculator, financial freedom",
+    "Monopoly MC Trade, McDonald's Monopoly, Monopoly pieces, Trade pieces, Win prizes, McDonald's, Monopoly, Trade, Find pieces",
 };
 
 export default function RootLayout({
