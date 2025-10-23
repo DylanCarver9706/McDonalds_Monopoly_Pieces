@@ -17,6 +17,8 @@ import {
   ArrowForward as ArrowForwardIcon,
   Security as SecurityIcon,
   Speed as SpeedIcon,
+  AttachMoney as AttachMoneyIcon,
+  ViewModule as ViewModuleIcon,
 } from "@mui/icons-material";
 import { SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
@@ -24,22 +26,22 @@ import Link from "next/link";
 export default function HomePage() {
   const benefits = [
     {
-      icon: <SearchIcon sx={{ fontSize: 40, color: "#2563eb" }} />,
+      icon: <SearchIcon sx={{ fontSize: 40, color: "#db080f" }} />,
       title: "Find Missing Pieces",
       description:
-        "Search for the specific Monopoly pieces you need to complete your sets and win prizes.",
+        "Search for the specific Monopoly pieces you need to complete your sets and win prizes",
     },
     {
-      icon: <ChatIcon sx={{ fontSize: 40, color: "#2563eb" }} />,
+      icon: <ViewModuleIcon sx={{ fontSize: 40, color: "#db080f" }} />,
+      title: "List Your Pieces",
+      description:
+        "List your available pieces to have others in the community contact you to complete their sets",
+    },
+    {
+      icon: <ChatIcon sx={{ fontSize: 40, color: "#db080f" }} />,
       title: "Connect & Negotiate",
       description:
-        "Chat directly with other players to negotiate trades, splits, or sales of your pieces.",
-    },
-    {
-      icon: <ShareIcon sx={{ fontSize: 40, color: "#2563eb" }} />,
-      title: "Share the Prize",
-      description:
-        "Work together to complete sets and split prizes fairly with your trading partners.",
+        "Chat directly with other players to negotiate trades, splits, or sales of your pieces",
     },
   ];
 
@@ -59,8 +61,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <Box
         sx={{
-          background:
-            "linear-gradient(135deg, #667eea 0%,rgb(71, 94, 194) 100%)",
+          background: "linear-gradient(135deg, #d82f28 0%, #b8070d 100%)",
           color: "white",
           py: 8,
           position: "relative",
@@ -68,43 +69,58 @@ export default function HomePage() {
         }}
       >
         <Container maxWidth="lg">
-          <Grid container spacing={4} alignItems="center">
-            <Grid item xs={12} md={6}>
+          <Grid
+            container
+            spacing={4}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Grid item xs={12} md={8} sx={{ textAlign: "center" }}>
               <Typography
                 variant="h2"
                 component="h1"
                 gutterBottom
                 sx={{ fontWeight: "bold" }}
               >
-                McDonald's Monopoly Piece Trader
+                Monopoly McTrade
               </Typography>
               <Typography
                 variant="h5"
                 gutterBottom
                 sx={{ mb: 3, opacity: 0.9 }}
               >
-                Connect with other players to trade, sell, or split McDonald's
-                Monopoly pieces and win prizes together.
+                Connect with other players to trade McDonald's Monopoly property
+                pieces and win prizes together!
               </Typography>
-              <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{ mb: 4, justifyContent: "center" }}
+              >
                 <SignInButton mode="modal">
                   <Button
                     variant="contained"
                     size="large"
                     sx={{
                       backgroundColor: "white",
-                      color: "#2563eb",
+                      color: "#db080f",
                       "&:hover": {
                         backgroundColor: "#f8fafc",
                       },
                       px: 4,
                       py: 1.5,
                     }}
+                    // If the user is signed in already, navigate the user to /pieces-search
+                    onClick={() => {
+                      if (window.location.pathname !== "/sign-in") {
+                        window.location.href = "/pieces-search";
+                      }
+                    }}
                   >
-                    Start Trading Pieces
+                    Start Trading Pieces!
                   </Button>
                 </SignInButton>
-                <Button
+                {/* <Button
                   component={Link}
                   href="/how-it-works"
                   variant="outlined"
@@ -121,7 +137,7 @@ export default function HomePage() {
                   }}
                 >
                   How Trading Works
-                </Button>
+                </Button> */}
               </Stack>
             </Grid>
           </Grid>
@@ -185,8 +201,7 @@ export default function HomePage() {
       {/* CTA Section */}
       <Box
         sx={{
-          background:
-            "linear-gradient(135deg, #667eea 0%,rgb(71, 94, 194) 100%)",
+          background: "linear-gradient(135deg, #d82f28 0%, #b8070d 100%)",
           textAlign: "center",
           py: 8,
         }}
@@ -201,8 +216,8 @@ export default function HomePage() {
             Ready to Find Your Missing Pieces?
           </Typography>
           <Typography variant="h6" sx={{ mb: 4, opacity: 0.9, color: "white" }}>
-            Join thousands of players who have completed their sets and won
-            prizes through trading.
+            Join the community of players who have completed their sets and won
+            prizes
           </Typography>
           <SignInButton mode="modal">
             <Button
@@ -211,12 +226,18 @@ export default function HomePage() {
               endIcon={<ArrowForwardIcon />}
               sx={{
                 backgroundColor: "white",
-                color: "#2563eb",
+                color: "#db080f",
                 px: 4,
                 py: 1.5,
                 "&:hover": {
                   backgroundColor: "#f8fafc",
                 },
+              }}
+              // If the user is signed in already, navigate the user to /pieces-search
+              onClick={() => {
+                if (window.location.pathname !== "/sign-in") {
+                  window.location.href = "/pieces-search";
+                }
               }}
             >
               Start Trading Now
@@ -226,7 +247,7 @@ export default function HomePage() {
       </Box>
 
       {/* Game Info Section */}
-      <Box sx={{ backgroundColor: "#ffffff", py: 8 }}>
+      {/* <Box sx={{ backgroundColor: "#ffffff", py: 8 }}>
         <Container maxWidth="lg">
           <Box sx={{ textAlign: "center", mb: 6 }}>
             <Typography
@@ -255,7 +276,7 @@ export default function HomePage() {
                     gap: 1,
                   }}
                 >
-                  <SecurityIcon sx={{ color: "#2563eb" }} />
+                  <SecurityIcon sx={{ color: "#db080f" }} />
                   Safe Trading Guidelines
                 </Typography>
                 <Typography sx={{ color: "#64748b", mb: 2 }}>
@@ -287,7 +308,7 @@ export default function HomePage() {
                     gap: 1,
                   }}
                 >
-                  <SpeedIcon sx={{ color: "#2563eb" }} />
+                  <SpeedIcon sx={{ color: "#db080f" }} />
                   Game Rules & Tips
                 </Typography>
                 <Typography sx={{ color: "#64748b", mb: 2 }}>
@@ -309,10 +330,10 @@ export default function HomePage() {
             </Grid>
           </Grid>
         </Container>
-      </Box>
+      </Box> */}
 
       {/* Features Section */}
-      <Box sx={{ backgroundColor: "#f8fafc", py: 8 }}>
+      {/* <Box sx={{ backgroundColor: "#f8fafc", py: 8 }}>
         <Container maxWidth="lg">
           <Box sx={{ textAlign: "center", mb: 6 }}>
             <Typography
@@ -334,7 +355,7 @@ export default function HomePage() {
               {features.map((feature, index) => (
                 <Grid item xs={12} sm={6} key={index}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <CheckCircleIcon sx={{ color: "#2563eb" }} />
+                    <CheckCircleIcon sx={{ color: "#db080f" }} />
                     <Typography sx={{ color: "#1e293b" }}>{feature}</Typography>
                   </Box>
                 </Grid>
@@ -342,13 +363,13 @@ export default function HomePage() {
             </Grid>
           </Box>
         </Container>
-      </Box>
+      </Box> */}
 
       {/* Final CTA */}
-      <Box
+      {/* <Box
         sx={{
           background:
-            "linear-gradient(135deg, #667eea 0%,rgb(71, 94, 194) 100%)",
+            "linear-gradient(135deg, #d82f28 0%, #b8070d 100%)",
           color: "white",
           py: 8,
         }}
@@ -367,7 +388,7 @@ export default function HomePage() {
               size="large"
               sx={{
                 backgroundColor: "white",
-                color: "#2563eb",
+                color: "#db080f",
                 px: 6,
                 py: 2,
                 fontSize: "1.1rem",
@@ -380,7 +401,7 @@ export default function HomePage() {
             </Button>
           </SignInButton>
         </Container>
-      </Box>
+      </Box> */}
     </Box>
   );
 }

@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { auth } from "@clerk/nextjs/server";
 
 // POST - Send a message
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const { clerk_user_id, chat_id, content } = await request.json();
 
-    const { chat_id, content } = await request.json();
+    if (!clerk_user_id) {
+      return NextResponse.json(
+        { error: "Clerk user ID is required" },
+        { status: 400 }
+      );
+    }
 
     if (!chat_id || !content) {
       return NextResponse.json(
@@ -23,7 +24,7 @@ export async function POST(request: NextRequest) {
     const { data: currentUser, error: userError } = await supabaseAdmin
       .from("users")
       .select("id")
-      .eq("clerk_user_id", userId)
+      .eq("clerk_user_id", clerk_user_id)
       .single();
 
     if (userError || !currentUser) {

@@ -1,20 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { auth } from "@clerk/nextjs/server";
 
 // GET - Fetch user's pieces
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { searchParams } = new URL(request.url);
+    const clerkUserId = searchParams.get("clerk_user_id");
+
+    if (!clerkUserId) {
+      return NextResponse.json(
+        { error: "Clerk user ID required" },
+        { status: 400 }
+      );
     }
 
     // Get user's Supabase ID from metadata
     const { data: userData, error: userError } = await supabaseAdmin
       .from("users")
       .select("id")
-      .eq("clerk_user_id", userId)
+      .eq("clerk_user_id", clerkUserId)
       .single();
 
     if (userError || !userData) {
@@ -27,7 +31,7 @@ export async function GET() {
       .select(
         `
         *,
-        pieces!inner(name, section),
+        pieces!inner(name, section, color),
         boards!inner(name, year)
       `
       )
@@ -48,8 +52,9 @@ export async function GET() {
         state_acquired: piece.state_acquired,
         created_at: piece.created_at,
         piece_name: piece.pieces.name,
-        board_name: piece.boards.name,
+        board_year: piece.boards.year,
         section: piece.pieces.section,
+        color: piece.pieces.color,
       })) || [];
 
     return NextResponse.json(transformedPieces);
@@ -65,13 +70,15 @@ export async function GET() {
 // POST - Create new user piece
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { board_id, piece_id, city_acquired, state_acquired } =
+    const { clerk_user_id, board_id, piece_id, city_acquired, state_acquired } =
       await request.json();
+
+    if (!clerk_user_id) {
+      return NextResponse.json(
+        { error: "Clerk user ID required" },
+        { status: 400 }
+      );
+    }
 
     if (!board_id || !piece_id) {
       return NextResponse.json(
@@ -84,7 +91,7 @@ export async function POST(request: NextRequest) {
     const { data: userData, error: userError } = await supabaseAdmin
       .from("users")
       .select("id")
-      .eq("clerk_user_id", userId)
+      .eq("clerk_user_id", clerk_user_id)
       .single();
 
     if (userError || !userData) {
@@ -144,13 +151,15 @@ export async function POST(request: NextRequest) {
 // PUT - Update user piece
 export async function PUT(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { board_id, piece_id, city_acquired, state_acquired } =
+    const { clerk_user_id, board_id, piece_id, city_acquired, state_acquired } =
       await request.json();
+
+    if (!clerk_user_id) {
+      return NextResponse.json(
+        { error: "Clerk user ID required" },
+        { status: 400 }
+      );
+    }
 
     if (!board_id || !piece_id) {
       return NextResponse.json(
@@ -163,7 +172,7 @@ export async function PUT(request: NextRequest) {
     const { data: userData, error: userError } = await supabaseAdmin
       .from("users")
       .select("id")
-      .eq("clerk_user_id", userId)
+      .eq("clerk_user_id", clerk_user_id)
       .single();
 
     if (userError || !userData) {
@@ -207,12 +216,14 @@ export async function PUT(request: NextRequest) {
 // DELETE - Remove user piece
 export async function DELETE(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const { clerk_user_id, board_id, piece_id } = await request.json();
 
-    const { board_id, piece_id } = await request.json();
+    if (!clerk_user_id) {
+      return NextResponse.json(
+        { error: "Clerk user ID required" },
+        { status: 400 }
+      );
+    }
 
     if (!board_id || !piece_id) {
       return NextResponse.json(
@@ -225,7 +236,7 @@ export async function DELETE(request: NextRequest) {
     const { data: userData, error: userError } = await supabaseAdmin
       .from("users")
       .select("id")
-      .eq("clerk_user_id", userId)
+      .eq("clerk_user_id", clerk_user_id)
       .single();
 
     if (userError || !userData) {

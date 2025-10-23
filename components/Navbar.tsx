@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import {
   AppBar,
   Toolbar,
@@ -21,6 +22,7 @@ import {
   Search,
   Collections as CollectionsIcon,
   Chat as ChatIcon,
+  ViewModule as ViewModuleIcon,
 } from "@mui/icons-material";
 import { UserButton, SignInButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
@@ -30,12 +32,18 @@ const Navbar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { isSignedIn } = useUser();
+  const pathname = usePathname();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
   const navItems = [
+    {
+      text: "Home",
+      href: "/",
+      icon: <InfoIcon />,
+    },
     {
       text: "Pieces Search",
       href: "/pieces-search",
@@ -44,27 +52,47 @@ const Navbar = () => {
     {
       text: "My Pieces",
       href: "/my-pieces",
-      icon: <CollectionsIcon />,
+      icon: <ViewModuleIcon />,
     },
     {
       text: "Chats",
       href: "/chats",
       icon: <ChatIcon />,
     },
-    { text: "How It Works", href: "/how-it-works", icon: <InfoIcon /> },
+    // { text: "How It Works", href: "/how-it-works", icon: <InfoIcon /> },
   ];
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "left" }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        McDonald's Monopoly Piece Finder
+      <Typography
+        variant="h6"
+        sx={{ my: 2, fontWeight: "bold", textAlign: "center" }}
+      >
+        Monopoly McTrade
       </Typography>
       <List>
-        {navItems.map((item) => (
-          <ListItem key={item.text} component={Link} href={item.href}>
-            <ListItemText primary={item.text} />
-          </ListItem>
-        ))}
+        {navItems.map((item) => {
+          const isActive =
+            pathname.includes(item.href) ||
+            (item.text === "Chats" && pathname.startsWith("/chat/"));
+          return (
+            <ListItem
+              key={item.text}
+              component={Link}
+              href={item.href}
+              sx={{
+                color: isActive ? "#db080f" : "inherit",
+                fontWeight: isActive ? "bold" : "normal",
+                "&:hover": {
+                  backgroundColor: "#d82f28",
+                  color: "white",
+                },
+              }}
+            >
+              <ListItemText primary={item.text} />
+            </ListItem>
+          );
+        })}
       </List>
     </Box>
   );
@@ -84,14 +112,13 @@ const Navbar = () => {
             sx={{
               flexGrow: 1,
               textDecoration: "none",
-              color: "inherit",
               fontWeight: "bold",
               display: "flex",
               alignItems: "center",
               gap: 1,
             }}
           >
-            McDonald's Monopoly Piece Finder
+            Monopoly McTrade
           </Typography>
 
           {isMobile ? (
@@ -105,18 +132,31 @@ const Navbar = () => {
             </IconButton>
           ) : (
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              {navItems.map((item) => (
-                <Button
-                  key={item.text}
-                  component={Link}
-                  href={item.href}
-                  color="inherit"
-                  startIcon={item.icon}
-                  sx={{ textTransform: "none" }}
-                >
-                  {item.text}
-                </Button>
-              ))}
+              {navItems.map((item) => {
+                const isActive =
+                  pathname === item.href ||
+                  (item.text === "Chats" && pathname.startsWith("/chat/"));
+                return (
+                  <Button
+                    key={item.text}
+                    component={Link}
+                    href={item.href}
+                    color="inherit"
+                    startIcon={item.icon}
+                    sx={{
+                      textTransform: "none",
+                      color: isActive ? "#db080f" : "inherit",
+                      fontWeight: isActive ? "bold" : "normal",
+                      "&:hover": {
+                        backgroundColor: "#d82f28",
+                        color: "white",
+                      },
+                    }}
+                  >
+                    {item.text}
+                  </Button>
+                );
+              })}
 
               {isSignedIn ? (
                 <UserButton />
@@ -128,7 +168,7 @@ const Navbar = () => {
                     sx={{
                       textTransform: "none",
                       background:
-                        "linear-gradient(135deg, #667eea 0%,rgb(71, 94, 194) 100%)",
+                        "linear-gradient(135deg, #d82f28 0%, #b8070d 100%)",
                     }}
                   >
                     Sign In

@@ -50,19 +50,26 @@ interface Chat {
 }
 
 export default function ChatsPage() {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const [chats, setChats] = useState<Chat[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingChats, setLoadingChats] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadChats();
-  }, []);
+    if (isLoaded && user) {
+      loadChats();
+    } else if (isLoaded && !user) {
+      setError("Please sign in to view your chats");
+    }
+  }, [isLoaded, user]);
 
   const loadChats = async () => {
+    if (!user) return;
+
     try {
-      setLoading(true);
-      const response = await fetch("/api/chats");
+      setLoadingChats(true);
+      setError(null);
+      const response = await fetch(`/api/chats?clerk_user_id=${user.id}`);
 
       if (!response.ok) {
         throw new Error("Failed to load chats");
@@ -73,7 +80,7 @@ export default function ChatsPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
-      setLoading(false);
+      setLoadingChats(false);
     }
   };
 
@@ -109,17 +116,37 @@ export default function ChatsPage() {
     }
   };
 
-  if (loading) {
+  if (loadingChats) {
     return (
       <Box
         sx={{
+          backgroundColor: "#f8fafc",
+          minHeight: "100vh",
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
-          minHeight: "50vh",
+          alignItems: "flex-start",
+          paddingTop: "33vh",
         }}
       >
-        <CircularProgress />
+        <Box sx={{ textAlign: "center" }}>
+          <CircularProgress
+            size={80}
+            thickness={4}
+            sx={{
+              color: "#d82f28",
+              mb: 2,
+            }}
+          />
+          <Typography
+            variant="h6"
+            sx={{
+              color: "#1e293b",
+              fontWeight: "bold",
+            }}
+          >
+            Loading your chats...
+          </Typography>
+        </Box>
       </Box>
     );
   }
@@ -133,139 +160,182 @@ export default function ChatsPage() {
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Typography
-          variant="h4"
-          component="h1"
-          sx={{ fontWeight: "bold", mb: 2 }}
-        >
-          My Chats
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          {chats.length} conversation{chats.length !== 1 ? "s" : ""}
-        </Typography>
+    <Box sx={{ backgroundColor: "#f8fafc", minHeight: "100vh" }}>
+      {/* Hero Section */}
+      <Box
+        sx={{
+          background: "linear-gradient(135deg, #d82f28 0%, #b8070d 100%)",
+          color: "white",
+          py: 6,
+        }}
+      >
+        <Container maxWidth="md">
+          <Typography
+            variant="h3"
+            component="h1"
+            textAlign="center"
+            gutterBottom
+            sx={{ fontWeight: "bold" }}
+          >
+            My Chats
+          </Typography>
+          <Typography
+            variant="h6"
+            textAlign="center"
+            sx={{ mb: 4, opacity: 0.9 }}
+          >
+            Connect with the community to trade pieces!
+          </Typography>
+        </Container>
       </Box>
 
-      <Divider sx={{ mb: 3 }} />
-
-      {/* Chats List */}
-      {chats.length === 0 ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            py: 8,
-          }}
-        >
-          <ChatIcon sx={{ fontSize: 64, color: "text.secondary", mb: 2 }} />
-          <Typography variant="h6" color="text.secondary" gutterBottom>
-            No conversations yet
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Start chatting with other players to trade pieces!
-          </Typography>
-          <Button
-            variant="contained"
-            component={Link}
-            href="/pieces-search"
-            startIcon={<ChatIcon />}
+      {/* Content Section */}
+      <Container maxWidth="md" sx={{ py: 6 }}>
+        {/* Chats List */}
+        {chats.length === 0 ? (
+          <Box
+            sx={{
+              textAlign: "center",
+              py: 8,
+              border: "2px solid #000",
+              borderRadius: 2,
+              p: 2,
+              backgroundColor: "#f8f9fa",
+            }}
           >
-            Find Players
-          </Button>
-        </Box>
-      ) : (
-        <List sx={{ p: 0 }}>
-          {chats.map((chat, index) => {
-            const otherUser = getOtherUser(chat);
-            return (
-              <ListItem
-                key={chat.id}
-                sx={{
-                  p: 0,
-                  mb: 1,
-                }}
-              >
-                <Card
-                  sx={{
-                    width: "100%",
-                    p: 2,
-                    "&:hover": {
-                      backgroundColor: "action.hover",
-                    },
-                  }}
-                >
-                  <Link
-                    href={`/chat/${chat.id}`}
-                    style={{ textDecoration: "none", color: "inherit" }}
+            <ChatIcon sx={{ fontSize: 64, color: "text.secondary", mb: 2 }} />
+            <Typography variant="h6" color="text.secondary" gutterBottom>
+              No conversations yet
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              Start chatting with other players to trade pieces!
+            </Typography>
+            <Button
+              variant="contained"
+              component={Link}
+              href="/pieces-search"
+              startIcon={<ChatIcon />}
+              sx={{
+                backgroundColor: "#d82f28",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "#b8070d",
+                },
+              }}
+            >
+              Find Players
+            </Button>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              border: "2px solid #000",
+              borderRadius: 2,
+              p: 2,
+              backgroundColor: "#f8f9fa",
+            }}
+          >
+            <Typography
+              variant="h6"
+              component="h3"
+              gutterBottom
+              sx={{ color: "#1e293b", mb: 2 }}
+            >
+              Your Conversations
+            </Typography>
+            <List sx={{ p: 0 }}>
+              {chats.map((chat, index) => {
+                const otherUser = getOtherUser(chat);
+                return (
+                  <ListItem
+                    key={chat.id}
+                    sx={{
+                      p: 0,
+                      mb: 1,
+                    }}
                   >
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                      <Avatar sx={{ bgcolor: "primary.main" }}>
-                        {otherUser?.username.charAt(0).toUpperCase()}
-                      </Avatar>
-                      <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                    <Card
+                      sx={{
+                        width: "100%",
+                        p: 2,
+                        "&:hover": {
+                          backgroundColor: "action.hover",
+                        },
+                      }}
+                    >
+                      <Link
+                        href={`/chat/${chat.id}`}
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
                         <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            mb: 0.5,
-                          }}
+                          sx={{ display: "flex", alignItems: "center", gap: 2 }}
                         >
-                          <Typography
-                            variant="h6"
-                            sx={{
-                              fontWeight: "bold",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {otherUser?.username}
-                          </Typography>
-                          <Typography
-                            variant="caption"
-                            color="text.secondary"
-                            sx={{ flexShrink: 0, ml: 1 }}
-                          >
-                            {formatDate(
-                              chat.last_message?.created_at || chat.created_at
+                          <Avatar sx={{ bgcolor: "#d82f28" }}>
+                            {otherUser?.username.charAt(0).toUpperCase()}
+                          </Avatar>
+                          <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                mb: 0.5,
+                              }}
+                            >
+                              <Typography
+                                variant="h6"
+                                sx={{
+                                  fontWeight: "bold",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {otherUser?.username}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                sx={{ flexShrink: 0, ml: 1 }}
+                              >
+                                {formatDate(
+                                  chat.last_message?.created_at ||
+                                    chat.created_at
+                                )}
+                              </Typography>
+                            </Box>
+                            {chat.last_message ? (
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {formatLastMessage(chat.last_message)}
+                              </Typography>
+                            ) : (
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                fontStyle="italic"
+                              >
+                                No messages yet
+                              </Typography>
                             )}
-                          </Typography>
+                          </Box>
                         </Box>
-                        {chat.last_message ? (
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {formatLastMessage(chat.last_message)}
-                          </Typography>
-                        ) : (
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            fontStyle="italic"
-                          >
-                            No messages yet
-                          </Typography>
-                        )}
-                      </Box>
-                    </Box>
-                  </Link>
-                </Card>
-              </ListItem>
-            );
-          })}
-        </List>
-      )}
-    </Container>
+                      </Link>
+                    </Card>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Box>
+        )}
+      </Container>
+    </Box>
   );
 }

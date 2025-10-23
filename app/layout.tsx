@@ -11,9 +11,9 @@ import { UserSetupProvider } from "@/components/UserSetupProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Monopoly McTrade - McDonald's Monopoly Piece Finder",
+  title: "Monopoly McTrade - Monopoly McTrade",
   description:
-    "Trade McDonald's Monopoly pieces with other players. Find the best deals and win prizes together.",
+    "Trade McDonald's Monopoly pieces with other players. Find missing McDonalds Monopoly pieces with in the community and win prizes together.",
   keywords:
     "Monopoly MC Trade, McDonald's Monopoly, Monopoly pieces, Trade pieces, Win prizes, McDonald's, Monopoly, Trade, Find pieces",
 };

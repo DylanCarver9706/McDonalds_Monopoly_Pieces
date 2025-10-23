@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
 export async function GET(
@@ -7,9 +6,14 @@ export async function GET(
   { params }: { params: Promise<{ chatId: string }> }
 ) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { searchParams } = new URL(request.url);
+    const clerkUserId = searchParams.get("clerk_user_id");
+
+    if (!clerkUserId) {
+      return NextResponse.json(
+        { error: "Clerk user ID is required" },
+        { status: 400 }
+      );
     }
 
     const { chatId } = await params;
@@ -18,7 +22,7 @@ export async function GET(
     const { data: currentUser } = await supabaseAdmin
       .from("users")
       .select("id")
-      .eq("clerk_user_id", userId)
+      .eq("clerk_user_id", clerkUserId)
       .single();
 
     if (!currentUser) {

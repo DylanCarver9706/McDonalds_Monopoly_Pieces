@@ -28,6 +28,7 @@ interface Piece {
   name: string;
   section: string;
   color: string;
+  board_order: number;
 }
 
 interface PropertySet {
@@ -66,20 +67,67 @@ export default function PiecesSearchPage() {
       return acc;
     }, {} as Record<string, PropertySet>);
 
-    return Object.values(groupedPieces);
+    // Sort pieces within each section by board_order
+    Object.keys(groupedPieces).forEach((section) => {
+      groupedPieces[section].pieces.sort(
+        (a, b) => a.board_order - b.board_order
+      );
+    });
+
+    // Define section order: regular sections by board_order, then utilities and railroads at bottom
+    const sectionOrder = [
+      "Brown",
+      "Light Blue",
+      "Pink",
+      "Orange",
+      "Red",
+      "Yellow",
+      "Green",
+      "Dark Blue",
+      "Utility",
+      "Railroad",
+    ];
+
+    // Return sections in the specified order
+    return sectionOrder
+      .filter(
+        (section) =>
+          groupedPieces[section] && groupedPieces[section].pieces.length > 0
+      )
+      .map((section) => groupedPieces[section]);
   }
 
   if (loading) {
     return (
       <Box
         sx={{
+          backgroundColor: "#f8fafc",
+          minHeight: "100vh",
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
-          minHeight: "50vh",
+          alignItems: "flex-start",
+          paddingTop: "33vh",
         }}
       >
-        <CircularProgress />
+        <Box sx={{ textAlign: "center" }}>
+          <CircularProgress
+            size={80}
+            thickness={4}
+            sx={{
+              color: "#d82f28",
+              mb: 2,
+            }}
+          />
+          <Typography
+            variant="h6"
+            sx={{
+              color: "#1e293b",
+              fontWeight: "bold",
+            }}
+          >
+            Loading pieces...
+          </Typography>
+        </Box>
       </Box>
     );
   }
@@ -93,12 +141,11 @@ export default function PiecesSearchPage() {
   }
 
   return (
-    <Box>
+    <Box sx={{ backgroundColor: "#f8fafc", minHeight: "100vh" }}>
       {/* Hero Section */}
       <Box
         sx={{
-          background:
-            "linear-gradient(135deg, #667eea 0%, rgb(71, 94, 194) 100%)",
+          background: "linear-gradient(135deg, #d82f28 0%, #b8070d 100%)",
           color: "white",
           py: 6,
         }}
@@ -134,83 +181,90 @@ export default function PiecesSearchPage() {
             gutterBottom
             sx={{ color: "#1e293b", mb: 4 }}
           >
-            Browse by Property Set
+            Monopoly Board Pieces
           </Typography>
 
-          <Grid container spacing={3}>
+          <Stack spacing={4}>
             {propertySets.map((set, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Box
-                  sx={{
-                    border: "2px solid #000",
-                    borderRadius: 2,
-                    p: 2,
-                    backgroundColor: "#f8f9fa",
-                  }}
+              <Box
+                key={index}
+                sx={{
+                  border: "2px solid #000",
+                  borderRadius: 2,
+                  p: 2,
+                  backgroundColor: "#f8f9fa",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  component="h3"
+                  gutterBottom
+                  sx={{ color: "#1e293b", mb: 2 }}
                 >
-                  <Grid container spacing={1}>
-                    {set.pieces.map((piece, pieceIndex) => (
-                      <Grid item xs={10} sm={6} md={5.5} key={piece.id}>
-                        <Card
-                          component={Link}
-                          href={`/piece/${piece.id}`}
+                  {set.section} Properties
+                </Typography>
+                <Grid container spacing={1}>
+                  {set.pieces.map((piece, pieceIndex) => (
+                    <Grid item xs={6} sm={3} md={2.4} key={piece.id}>
+                      <Card
+                        component={Link}
+                        href={`/piece/${piece.id}`}
+                        sx={{
+                          textDecoration: "none",
+                          color: "inherit",
+                          height: 200,
+                          width: "100%",
+                          display: "flex",
+                          flexDirection: "column",
+                          border: `2px solid ${set.color}`,
+                          borderRadius: 0,
+                          overflow: "hidden",
+                          transition: "all 0.2s ease-in-out",
+                          "&:hover": {
+                            transform: "translateY(-2px)",
+                            boxShadow: 3,
+                          },
+                        }}
+                      >
+                        {/* Color bar at top */}
+                        <Box
                           sx={{
-                            textDecoration: "none",
-                            color: "inherit",
-                            height: 200,
+                            height: 36,
+                            backgroundColor: set.color,
                             width: "100%",
+                          }}
+                        />
+                        {/* Property name */}
+                        <Box
+                          sx={{
+                            p: 1,
+                            flexGrow: 1,
                             display: "flex",
-                            flexDirection: "column",
-                            border: `2px solid ${set.color}`,
-                            borderRadius: 0,
-                            overflow: "hidden",
-                            transition: "all 0.2s ease-in-out",
-                            "&:hover": {
-                              transform: "translateY(-2px)",
-                              boxShadow: 3,
-                            },
+                            alignItems: "center",
+                            justifyContent: "center",
+                            height: "100%",
                           }}
                         >
-                          {/* Color bar at top */}
-                          <Box
+                          <Typography
+                            variant="body2"
                             sx={{
-                              height: 32,
-                              backgroundColor: set.color,
+                              fontWeight: "bold",
+                              textAlign: "center",
                               width: "100%",
-                            }}
-                          />
-                          {/* Property name */}
-                          <Box
-                            sx={{
-                              p: 1.5,
-                              flexGrow: 1,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              height: "100%",
+                              lineHeight: 1.2,
+                              fontSize: "1rem",
                             }}
                           >
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                fontWeight: "bold",
-                                textAlign: "center",
-                                width: "100%",
-                                lineHeight: 1.2,
-                                fontSize: "0.875rem",
-                              }}
-                            >
-                              {piece.name}
-                            </Typography>
-                          </Box>
-                        </Card>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </Box>
-              </Grid>
+                            {piece.name}
+                          </Typography>
+                        </Box>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
             ))}
-          </Grid>
+          </Stack>
         </Container>
       </Box>
     </Box>

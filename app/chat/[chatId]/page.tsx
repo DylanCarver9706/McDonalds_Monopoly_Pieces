@@ -19,7 +19,7 @@ import {
   Person as PersonIcon,
 } from "@mui/icons-material";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 
@@ -57,6 +57,12 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Function to scroll to bottom of messages
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     if (chatId) {
@@ -64,10 +70,19 @@ export default function ChatPage() {
     }
   }, [chatId]);
 
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   const loadChat = async () => {
+    if (!user) return;
+
     try {
       setLoading(true);
-      const response = await fetch(`/api/chats/${chatId}`);
+      const response = await fetch(
+        `/api/chats/${chatId}?clerk_user_id=${user.id}`
+      );
 
       if (!response.ok) {
         throw new Error("Failed to load chat");
@@ -76,6 +91,8 @@ export default function ChatPage() {
       const chatData = await response.json();
       setChat(chatData);
       setMessages(chatData.messages || []);
+      // Scroll to bottom after loading chat
+      setTimeout(scrollToBottom, 200);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -84,7 +101,7 @@ export default function ChatPage() {
   };
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || !chat || sending) return;
+    if (!newMessage.trim() || !chat || sending || !user) return;
 
     try {
       setSending(true);
@@ -92,6 +109,7 @@ export default function ChatPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          clerk_user_id: user.id,
           chat_id: chat.id,
           content: newMessage.trim(),
         }),
@@ -101,6 +119,8 @@ export default function ChatPage() {
         const messageData = await response.json();
         setMessages((prev) => [...prev, messageData]);
         setNewMessage("");
+        // Scroll to bottom after sending message
+        setTimeout(scrollToBottom, 100);
       } else {
         throw new Error("Failed to send message");
       }
@@ -121,13 +141,33 @@ export default function ChatPage() {
     return (
       <Box
         sx={{
+          backgroundColor: "#f8fafc",
+          minHeight: "100vh",
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
-          minHeight: "50vh",
+          alignItems: "flex-start",
+          paddingTop: "33vh",
         }}
       >
-        <CircularProgress />
+        <Box sx={{ textAlign: "center" }}>
+          <CircularProgress
+            size={80}
+            thickness={4}
+            sx={{
+              color: "#d82f28",
+              mb: 2,
+            }}
+          />
+          <Typography
+            variant="h6"
+            sx={{
+              color: "#1e293b",
+              fontWeight: "bold",
+            }}
+          >
+            Loading chat...
+          </Typography>
+        </Box>
       </Box>
     );
   }
@@ -151,138 +191,179 @@ export default function ChatPage() {
   const otherUser = getOtherUser();
 
   return (
-    <Container maxWidth="sm" sx={{ py: 4 }}>
-      {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Avatar sx={{ bgcolor: "primary.main" }}>
-            {otherUser?.username.charAt(0).toUpperCase()}
-          </Avatar>
-          <Box>
-            <Typography variant="h5" component="h1" sx={{ fontWeight: "bold" }}>
-              Chat with {otherUser?.username}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Started {new Date(chat.created_at).toLocaleDateString()}
-            </Typography>
+    <Box sx={{ backgroundColor: "#f8fafc", minHeight: "100vh" }}>
+      {/* Hero Section */}
+      <Box
+        sx={{
+          background: "linear-gradient(135deg, #d82f28 0%, #b8070d 100%)",
+          color: "white",
+          py: 4,
+        }}
+      >
+        <Container maxWidth="sm">
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Avatar sx={{ bgcolor: "rgba(255, 255, 255, 0.2)" }}>
+              {otherUser?.username.charAt(0).toUpperCase()}
+            </Avatar>
+            <Box>
+              <Typography
+                variant="h5"
+                component="h1"
+                sx={{ fontWeight: "bold" }}
+              >
+                Chat with {otherUser?.username}
+              </Typography>
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                Started {new Date(chat.created_at).toLocaleDateString()}
+              </Typography>
+            </Box>
           </Box>
-        </Box>
+        </Container>
       </Box>
 
-      <Divider sx={{ mb: 3 }} />
+      {/* Content Section */}
+      <Container maxWidth="sm" sx={{ py: 4 }}>
+        {/* Messages */}
+        <Card sx={{ height: "60vh", display: "flex", flexDirection: "column" }}>
+          {messages.length === 0 ? (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+                p: 4,
+              }}
+            >
+              <PersonIcon
+                sx={{ fontSize: 64, color: "text.secondary", mb: 2 }}
+              />
+              <Typography variant="h6" color="text.secondary" gutterBottom>
+                No messages yet
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Start the conversation!
+              </Typography>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                flexGrow: 1,
+                overflow: "auto",
+                p: 2,
+                display: "flex",
+                flexDirection: "column",
+                gap: 1,
+                // Hide scrollbar
+                "&::-webkit-scrollbar": {
+                  display: "none",
+                },
+                // Firefox
+                scrollbarWidth: "none",
+                // IE and Edge
+                msOverflowStyle: "none",
+              }}
+            >
+              {messages.map((message) => {
+                const isCurrentUser =
+                  user?.unsafeMetadata?.supabase_user_id === message.sender_id;
 
-      {/* Messages */}
-      <Card sx={{ height: "60vh", display: "flex", flexDirection: "column" }}>
-        {messages.length === 0 ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-              p: 4,
-            }}
-          >
-            <PersonIcon sx={{ fontSize: 64, color: "text.secondary", mb: 2 }} />
-            <Typography variant="h6" color="text.secondary" gutterBottom>
-              No messages yet
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Start the conversation!
-            </Typography>
-          </Box>
-        ) : (
-          <Box
-            sx={{
-              flexGrow: 1,
-              overflow: "auto",
-              p: 2,
-              display: "flex",
-              flexDirection: "column",
-              gap: 1,
-            }}
-          >
-            {messages.map((message) => {
-              const isCurrentUser =
-                user?.unsafeMetadata?.supabase_user_id === message.sender_id;
-
-              return (
-                <Box
-                  key={message.id}
-                  sx={{
-                    display: "flex",
-                    justifyContent: isCurrentUser ? "flex-end" : "flex-start",
-                    mb: 1,
-                  }}
-                >
+                return (
                   <Box
+                    key={message.id}
                     sx={{
-                      maxWidth: "70%",
-                      p: 1.5,
-                      borderRadius: 2,
-                      backgroundColor: isCurrentUser
-                        ? "primary.main"
-                        : "grey.300",
-                      color: isCurrentUser ? "white" : "text.primary",
-                      position: "relative",
+                      display: "flex",
+                      justifyContent: isCurrentUser ? "flex-end" : "flex-start",
+                      mb: 1,
                     }}
                   >
-                    <Typography
-                      variant="body2"
-                      sx={{ wordBreak: "break-word" }}
-                    >
-                      {message.content}
-                    </Typography>
-                    <Typography
-                      variant="caption"
+                    <Box
                       sx={{
-                        display: "block",
-                        mt: 0.5,
-                        opacity: 0.7,
-                        fontSize: "0.7rem",
+                        maxWidth: "70%",
+                        p: 1.5,
+                        borderRadius: 2,
+                        backgroundColor: isCurrentUser ? "#d82f28" : "grey.300",
+                        color: isCurrentUser ? "white" : "text.primary",
+                        position: "relative",
                       }}
                     >
-                      {new Date(message.created_at).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ wordBreak: "break-word" }}
+                      >
+                        {message.content}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          display: "block",
+                          mt: 0.5,
+                          opacity: 0.7,
+                          fontSize: "0.7rem",
+                        }}
+                      >
+                        {new Date(message.created_at).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
-              );
-            })}
-          </Box>
-        )}
+                );
+              })}
+              {/* Invisible element to scroll to */}
+              <div ref={messagesEndRef} />
+            </Box>
+          )}
 
-        {/* Message Input */}
-        <Box sx={{ p: 2, borderTop: 1, borderColor: "divider" }}>
-          <Box sx={{ display: "flex", gap: 1 }}>
-            <TextField
-              fullWidth
-              placeholder="Type a message..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSendMessage();
-                }
-              }}
-              size="small"
-              disabled={sending}
-            />
-            <Button
-              variant="contained"
-              onClick={handleSendMessage}
-              disabled={!newMessage.trim() || sending}
-              sx={{ minWidth: "auto", px: 2 }}
-            >
-              {sending ? <CircularProgress size={20} /> : <SendIcon />}
-            </Button>
+          {/* Message Input */}
+          <Box sx={{ p: 2, borderTop: 1, borderColor: "divider" }}>
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <TextField
+                fullWidth
+                placeholder="Type a message..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+                size="small"
+                disabled={sending}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "black",
+                    },
+                  },
+                }}
+              />
+              <Button
+                variant="contained"
+                onClick={handleSendMessage}
+                disabled={!newMessage.trim() || sending}
+                sx={{
+                  minWidth: "auto",
+                  px: 2,
+                  backgroundColor: "#d82f28",
+                  "&:hover": {
+                    backgroundColor: "#b8070d",
+                  },
+                }}
+              >
+                {sending ? (
+                  <CircularProgress size={20} sx={{ color: "#b8070d" }} />
+                ) : (
+                  <SendIcon sx={{ color: "white" }} />
+                )}
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      </Card>
-    </Container>
+        </Card>
+      </Container>
+    </Box>
   );
 }

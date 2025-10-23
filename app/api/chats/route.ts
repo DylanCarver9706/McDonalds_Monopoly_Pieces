@@ -1,20 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
 // GET - Get all chats for the current user
 export async function GET(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { searchParams } = new URL(request.url);
+    const clerkUserId = searchParams.get("clerk_user_id");
+
+    if (!clerkUserId) {
+      return NextResponse.json(
+        { error: "Clerk user ID is required" },
+        { status: 400 }
+      );
     }
 
     // Get the current user's Supabase ID
     const { data: currentUser } = await supabaseAdmin
       .from("users")
       .select("id")
-      .eq("clerk_user_id", userId)
+      .eq("clerk_user_id", clerkUserId)
       .single();
 
     if (!currentUser) {
@@ -96,12 +100,14 @@ export async function GET(request: NextRequest) {
 // POST - Create or get existing chat
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const { clerk_user_id, target_user_id } = await request.json();
 
-    const { target_user_id } = await request.json();
+    if (!clerk_user_id) {
+      return NextResponse.json(
+        { error: "Clerk user ID is required" },
+        { status: 400 }
+      );
+    }
 
     if (!target_user_id) {
       return NextResponse.json(
@@ -114,7 +120,7 @@ export async function POST(request: NextRequest) {
     const { data: currentUser, error: userError } = await supabaseAdmin
       .from("users")
       .select("id")
-      .eq("clerk_user_id", userId)
+      .eq("clerk_user_id", clerk_user_id)
       .single();
 
     if (userError || !currentUser) {
