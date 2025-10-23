@@ -59,7 +59,6 @@ const Navbar = () => {
       href: "/chats",
       icon: <ChatIcon />,
     },
-    // { text: "How It Works", href: "/how-it-works", icon: <InfoIcon /> },
   ];
 
   const drawer = (
