@@ -1,23 +1,24 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import posthog from 'posthog-js'
+import { useEffect } from "react";
+import posthog from "posthog-js";
 
 export default function PostHogProvider({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   useEffect(() => {
-    // Initialize PostHog
-    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY || '', {
-      api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
-      loaded: (posthog) => {
-        if (process.env.NODE_ENV === 'development') posthog.debug()
-      },
-      capture_pageview: false,
-    })
-  }, [])
+    // Skip PostHog initialization if in development mode
+    if (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.includes("test")) {
+      return;
+    }
 
-  return <>{children}</>
+    // Initialize PostHog
+    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
+      api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST as string,
+    });
+  }, []);
+
+  return <>{children}</>;
 }
